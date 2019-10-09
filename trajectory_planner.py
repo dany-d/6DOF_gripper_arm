@@ -93,8 +93,6 @@ class TrajectoryPlanner():
             b = np.array([q0[j],0,0,qf[j],0,0]).transpose()
             a = np.dot(inv(M),b)
             # print("b_matrix"),b
-            # print("M matrix"),M
-            # print("a matrix"),a
             for i in range(len(t_vector)):
                 q[i,j] = a[0]+ a[1]*t_vector[i] + a[2]*t_vector[i]**2 + a[3]*t_vector[i]**3 + a[4]*t_vector[i]**4 +a[5]*t_vector[i]**5
                 q_dot[i,j] = a[1] + 2*a[2]*t_vector[i] + 3*a[3]*t_vector[i]**2 + 4*a[4]*t_vector[i]**3 + 5*a[5]*t_vector[i]**4
@@ -107,12 +105,6 @@ class TrajectoryPlanner():
     def generate_cubic_spline(self, initial_wp, final_wp, T,n):
         # waypoints = [0 70 25 90 35 80 0]
 
-        # for i = 1:(length(waypoints)-1)
-        #     time_durs(i) = abs(waypoints(i+1) - waypoints(i))/v_des;
-            # q0(i) = waypoints(i);
-            # qf(i) = waypoints(i+1);
-            # t0(i) = 0;
-            # tf(i) = time_durs(i);
         q0 = initial_wp
         qf = final_wp
         t0 = 0

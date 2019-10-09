@@ -15,12 +15,6 @@ def FK_mat(a,d,alpha,theta_off,joint_angle):
     [0,0,0,1]])
 
 
-    # old FK_dh
-    #  a = [0,-link[1],0,0,-link[3],0]
-    # d = [0,0,0,link[2],0]
-    # alpha = [-np.pi/2,0,np.pi/2,-np.pi/2,0]
-    # # theta_off = [0,-np.pi/2,-np.pi/2,0,np.pi/2]
-    # theta_off = [0,np.pi/2,-np.pi/2,0,np.pi/2] # check for theta_offset on joint2  - need to correct it!!!!
 
 def FK_dh(joint_angles, link):
     # link = np.array([0,117.5,100.5,113,94.5])
@@ -33,11 +27,9 @@ def FK_dh(joint_angles, link):
     # print(np.array(joint_angles) / np.pi * 180)
     nq = len(joint_angles)-2 
     for i in range(nq+1):
-        # print("A"),i
-        # print(FK_mat(a[4-i],d[4-i],alpha[4-i],theta_off[4-i],joint_angles[4-i]))
+       
         hom_mat = np.dot(FK_mat(a[nq-i],d[nq-i],alpha[nq-i],theta_off[nq-i],joint_angles[nq-i]),hom_mat)
-        # hom_mat = hom_mat.dot(FK_mat(a[i],d[i],alpha[i],theta_off[i],joint_angles[i]))
-        # hom_mat = FK_mat(a[i],d[i],alpha[i],theta_off[i],joint_angles[i]).dot(hom_mat)
+       
 
     return hom_mat
     """
@@ -55,8 +47,6 @@ def FK_dh(joint_angles, link):
 
 def FK_dh_new(joint_angles, link):
     # link = np.array([0,117.5,100.5,113,108])
-    # with gripper link = np.array([0,117.5,100.5,113,108])
-        # link = np.array([117.5,100.5,113,108,0])
     a = [0,link[1],0,0,0,0]
     d = [0,0,0,link[2],0,0]
     alpha = [np.pi/2,0,np.pi/2,-np.pi/2,np.pi/2,0]
@@ -69,11 +59,8 @@ def FK_dh_new(joint_angles, link):
 
     nq = len(joint_angles)-2 
     for i in range(3):
-        # print("A"),i
-        # print(FK_mat(a[4-i],d[4-i],alpha[4-i],theta_off[4-i],joint_angles[4-i]))
-        # hom_mat = np.dot(FK_mat(a[nq-i],d[nq-i],alpha[nq-i],theta_off[nq-i],joint_angles[nq-i]),hom_mat)
+        
         hom_mat = hom_mat.dot(FK_mat(a[i],d[i],alpha[i],theta_off[i],joint_angles[i]))
-        # hom_mat = FK_mat(a[i],d[i],alpha[i],theta_off[i],joint_angles[i]).dot(hom_mat)
 
     return hom_mat
     """
@@ -191,14 +178,6 @@ def IK2(rexarm,pose):
 
     np.set_printoptions(suppress=True)
 
-    # print(theta0/3.14*180,theta1/3.14*180,theta2/3.14*180)
-    # print(FK_dh_new([theta0,theta1,theta2,0,0,0],np.array([0,100.5,113]))[:,-1])
-
-    # rexarm.set_positions([theta0,theta1-np.pi/2,theta2,0,0])
-
-
-    # link = np.array([117.5,100.5,113,108,0])
-    # print(FK_dh_new([theta0,theta1,theta2,0,0,0], link)[:,-1]) 
     return([theta0,theta1-np.pi/2,theta2,0,0])
 
 
@@ -358,10 +337,6 @@ def wrist_angles(rexarm,end_pos,orientation,fromtop = True, current_angles = Non
     phi =np.pi
     psi = orientation
 
-
-
-
-
     theta_mat = None
 
     if i == None:
@@ -424,22 +399,10 @@ def wrist_angles(rexarm,end_pos,orientation,fromtop = True, current_angles = Non
             wrist_pos = end_pos.transpose() - (wrist_len+20)*R_mat06[:,-1] + 10 * R_mat06[:,1]
             # print ("wrist_pos",wrist_pos)
             theta_mat = IK2(rexarm,wrist_pos)
-        # if not theta_mat:
-        #     phi = -np.pi/2
-        #     rot_y = np.array([[np.cos(phi),0,np.sin(phi)],[0,1,0],[-np.sin(phi),0,np.cos(phi)]])
-        #     R_mat06 = rot_y.dot(rot_x)
-        #     wrist_pos = end_pos.transpose() - wrist_len*R_mat06[:,-1]
-        #     # print ("wrist_pos",wrist_pos)
-        #     theta_mat = IK2(rexarm,wrist_pos)
-    # print(theta_mat)
-    if theta_mat:
+
         theta_mat = np.array(theta_mat)
         R_mat03 = FK_dh_new(theta_mat.copy(),link)[:-1,:-1]
         R_mat36 = np.dot(R_mat03.transpose(),R_mat06)
-        # print ("theta_mat",theta_mat)
-        # print(R_mat03)
-        # print(R_mat36)
-
 
         theta4 = np.arctan2(R_mat36[1][2],R_mat36[0][2])
         theta5 = np.arctan2(np.sqrt(1-(R_mat36[2][2])**2),R_mat36[2][2]) #TODO add + - for atan2
@@ -479,9 +442,7 @@ def wrist_angles(rexarm,end_pos,orientation,fromtop = True, current_angles = Non
 
 
 def wrist_angles_task5(rexarm,end_pos,orientation, theta, current_angles = None, i =None):
-    # wrist_len = 94.5
-    # if current_angles == None:
-    #     current_angles = rexarm.get_positions()[:]
+
     wrist_len = 141-19
     link = np.array([117.5,100.5,113,108,0])
     end_pos = np.array(end_pos)
@@ -606,14 +567,7 @@ def wrist_angles_task5_wp(rexarm,end_pos,orientation, theta, d, current_angles =
             # print ("wrist_pos",wrist_pos)
             
             theta_mat = IK2(rexarm,wrist_pos)
-        # if not theta_mat:
-        #     phi = -np.pi/2
-        #     rot_y = np.array([[np.cos(phi),0,np.sin(phi)],[0,1,0],[-np.sin(phi),0,np.cos(phi)]])
-        #     R_mat06 = rot_y.dot(rot_x)
-        #     wrist_pos = end_pos.transpose() - wrist_len*R_mat06[:,-1]
-        #     # print ("wrist_pos",wrist_pos)
-        #     theta_mat = IK2(rexarm,wrist_pos)
-                
+
             if theta_mat:
                 break
             psi += np.pi / 2
@@ -627,13 +581,7 @@ def wrist_angles_task5_wp(rexarm,end_pos,orientation, theta, d, current_angles =
         wrist_pos = end_pos.transpose() - wrist_len*R_mat06[:,-1]
         # print ("wrist_pos",wrist_pos)
         theta_mat = IK2(rexarm,wrist_pos)
-        # if not theta_mat:
-        #     phi = -np.pi/2
-        #     rot_y = np.array([[np.cos(phi),0,np.sin(phi)],[0,1,0],[-np.sin(phi),0,np.cos(phi)]])
-        #     R_mat06 = rot_y.dot(rot_x)
-        #     wrist_pos = end_pos.transpose() - wrist_len*R_mat06[:,-1]
-        #     # print ("wrist_pos",wrist_pos)
-        #     theta_mat = IK2(rexarm,wrist_pos)
+
     # print(theta_mat)
     if theta_mat:
         theta_mat = np.array(theta_mat)

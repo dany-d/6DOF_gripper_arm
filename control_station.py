@@ -294,8 +294,6 @@ class Gui(QMainWindow):
                            self.ui.sldrWrist3.value()*D2R]
                            )
         self.rexarm.set_positions(joint_positions, update_now = False)
-        # print(self.ui.sldrGrip1.value())
-        # self.rexarm.setGripperPosition(np.deg2rad(self.ui.sldrGrip1.value()))
 
 
     def directControlChk(self, state):

@@ -12,8 +12,7 @@ while True:
     k = cv2.waitKey(1)
 
     gray = cv2.cvtColor(rgb_frame,cv2.COLOR_BGR2GRAY)
-    # cv2.imshow('winname', gray)
-    # cv2.waitKey(0)  
+
 
     # Find the chess board corners
     ret, corners = cv2.findChessboardCorners(gray, (8,6),None)
@@ -21,8 +20,7 @@ while True:
     if ret == True:
         chess = cv2.drawChessboardCorners(rgb_frame, (8,6), corners,ret)
         cv2.imshow('winname', chess)
-        # cv2.imwrite('chess3/chess'+str(counter)+side+fname.split('/')[1],chess)
-        # cv2.waitKey(0)
+
     else:
         cv2.imshow('window', rgb_frame)
 
